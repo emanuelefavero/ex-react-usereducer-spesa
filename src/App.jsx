@@ -7,18 +7,32 @@ import { products } from './data/products';
 export const App = () => {
   const [addedProducts, setAddedProducts] = useState([]);
   const hasCartItems = addedProducts.length > 0;
+  const total = addedProducts.reduce((acc, p) => acc + p.price * p.quantity, 0);
 
-  const handleAddToCart = product => {
-    const productInCart = addedProducts.find(p => p.id === product.id);
-    if (productInCart) return;
-
-    return setAddedProducts(prev => [
+  const addToCart = product =>
+    setAddedProducts(prev => [
       ...prev,
       {
         ...product,
         quantity: 1,
       },
     ]);
+
+  const updateProductQuantity = (id, quantity) =>
+    setAddedProducts(prev =>
+      prev.map(p => (p.id === id ? { ...p, quantity } : p)),
+    );
+
+  const removeFromCart = id =>
+    setAddedProducts(prev => prev.filter(p => p.id !== id));
+
+  const handleAddToCart = product => {
+    const productInCart = addedProducts.find(p => p.id === product.id);
+
+    if (productInCart) {
+      const { id, quantity } = productInCart;
+      updateProductQuantity(id, quantity + 1);
+    } else addToCart(product);
   };
 
   return (
@@ -26,12 +40,20 @@ export const App = () => {
       <h1>Carrello della spesa</h1>
 
       <h2>Prodotti</h2>
-      <ProductList products={products} onAddToCart={handleAddToCart} />
+      <ProductList
+        products={products}
+        cart={addedProducts}
+        onAddToCart={handleAddToCart}
+      />
 
       {hasCartItems && (
         <>
           <h2>Carrello</h2>
-          <Cart products={addedProducts} />
+          <Cart
+            products={addedProducts}
+            total={total}
+            onRemoveFromCart={removeFromCart}
+          />
         </>
       )}
     </main>
