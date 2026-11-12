@@ -1,0 +1,22 @@
+.product-list {
+  width: fit-content;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.product {
+  padding: 0.75rem 1rem;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  &:nth-child(even) {
+    background-color: var(--background);
+  }
+
+  & > :not(:first-child) {
+    margin-left: 1rem;
+  }
+}
