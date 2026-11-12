@@ -1,6 +1,7 @@
 import { Badge } from './ui/Badge';
 import './Cart.css';
 import { Trash } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
 import { Button } from './ui/Button';
 
 export const Cart = ({ products, total, onRemoveFromCart }) =>
@@ -37,7 +38,7 @@ export const Cart = ({ products, total, onRemoveFromCart }) =>
       <tfoot>
         <tr>
           <td colSpan='3'>Totale</td>
-          <td>{total}€</td>
+          <td>{formatCurrency(total)}</td>
         </tr>
       </tfoot>
     </table>
