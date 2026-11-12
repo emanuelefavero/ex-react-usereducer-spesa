@@ -36,6 +36,7 @@
     inline-size: 100%;
   }
 
+  /* Variants */
   &.primary {
     background-color: var(--primary-solid);
     color: var(--primary-solid-foreground);
@@ -104,5 +105,21 @@
     background-color: transparent;
     color: var(--foreground);
     border: 1px solid transparent;
+  }
+
+  /* Sizes */
+  &.sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  &.md {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+
+  &.lg {
+    padding: 1rem 1.5rem;
+    font-size: 1.125rem;
   }
 }

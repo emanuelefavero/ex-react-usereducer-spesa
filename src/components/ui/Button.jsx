@@ -10,18 +10,32 @@ const buttonVariant = Object.freeze({
   ghost: 'ghost',
 });
 
+const buttonSize = Object.freeze({
+  sm: 'sm',
+  md: 'md',
+  lg: 'lg',
+});
+
 export const Button = ({
   type = 'button',
   variant = buttonVariant.primary,
+  size = buttonSize.md,
   fullWidth = false,
   className = '',
   ...props
 }) => (
   <button
     type={type}
-    className={cx('button', variant, fullWidth && 'full-width', className)}
+    className={cx(
+      'button',
+      variant,
+      size,
+      fullWidth && 'full-width',
+      className,
+    )}
     {...props}
   />
 );
 
 Button.variant = buttonVariant;
+Button.size = buttonSize;
