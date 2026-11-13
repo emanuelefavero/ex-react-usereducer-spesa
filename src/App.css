@@ -1,4 +1,6 @@
 main {
+  padding-block: 2rem;
+
   > :not(:first-child) {
     margin-top: 1rem;
   }
