@@ -1,43 +1,56 @@
 import './App.css';
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { Cart } from './components/Cart';
 import { ProductList } from './components/ProductList';
 import { products } from './data/products';
 
+const INITIAL_CART_STATE = [];
+
+const CART_ACTIONS = {
+  ADD_ITEM: 'ADD_ITEM',
+  REMOVE_ITEM: 'REMOVE_ITEM',
+  UPDATE_QUANTITY: 'UPDATE_QUANTITY',
+};
+
+const cartReducer = (state, action) => {
+  switch (action.type) {
+    case CART_ACTIONS.ADD_ITEM:
+      return [...state, { ...action.payload, quantity: 1 }];
+
+    case CART_ACTIONS.REMOVE_ITEM:
+      return state.filter(item => item.id !== action.payload.id);
+
+    case CART_ACTIONS.UPDATE_QUANTITY:
+      const { id, quantity } = action.payload;
+
+      if (!Number.isFinite(quantity)) return state;
+
+      const validQuantity = Math.max(1, Math.trunc(quantity));
+
+      return state.map(item =>
+        item.id === id ? { ...item, quantity: validQuantity } : item,
+      );
+
+    default:
+      return state;
+  }
+};
+
 export const App = () => {
-  const [addedProducts, setAddedProducts] = useState([]);
-  const hasCartItems = addedProducts.length > 0;
-  const total = addedProducts.reduce((acc, p) => acc + p.price * p.quantity, 0);
-
-  const addToCart = product =>
-    setAddedProducts(prev => [
-      ...prev,
-      {
-        ...product,
-        quantity: 1,
-      },
-    ]);
-
-  const updateProductQuantity = (id, quantity) => {
-    if (!Number.isFinite(quantity)) return;
-
-    const validQuantity = Math.max(1, Math.trunc(quantity));
-
-    setAddedProducts(prev =>
-      prev.map(p => (p.id === id ? { ...p, quantity: validQuantity } : p)),
-    );
-  };
-
-  const removeFromCart = id =>
-    setAddedProducts(prev => prev.filter(p => p.id !== id));
+  const [cart, cartDispatch] = useReducer(cartReducer, INITIAL_CART_STATE);
+  const hasCartItems = cart.length > 0;
+  const total = cart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
 
   const handleAddToCart = product => {
-    const productInCart = addedProducts.find(p => p.id === product.id);
+    const productInCart = cart.find(p => p.id === product.id);
 
     if (productInCart) {
       const { id, quantity } = productInCart;
-      updateProductQuantity(id, quantity + 1);
-    } else addToCart(product);
+      cartDispatch({
+        type: CART_ACTIONS.UPDATE_QUANTITY,
+        payload: { id, quantity: quantity + 1 },
+      });
+    } else cartDispatch({ type: CART_ACTIONS.ADD_ITEM, payload: product });
   };
 
   return (
@@ -47,7 +60,7 @@ export const App = () => {
       <h2>Prodotti</h2>
       <ProductList
         products={products}
-        cart={addedProducts}
+        cart={cart}
         onAddToCart={handleAddToCart}
       />
 
@@ -55,10 +68,17 @@ export const App = () => {
         <>
           <h2>Carrello</h2>
           <Cart
-            products={addedProducts}
+            items={cart}
             total={total}
-            onRemoveFromCart={removeFromCart}
-            onUpdateProductQuantity={updateProductQuantity}
+            onRemoveFromCart={id =>
+              cartDispatch({ type: CART_ACTIONS.REMOVE_ITEM, payload: { id } })
+            }
+            onUpdateItemQuantity={(id, quantity) =>
+              cartDispatch({
+                type: CART_ACTIONS.UPDATE_QUANTITY,
+                payload: { id, quantity },
+              })
+            }
           />
         </>
       )}
