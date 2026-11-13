@@ -1,7 +1,6 @@
 import { Badge } from './ui/Badge';
 import './Cart.css';
 import { Trash } from 'lucide-react';
-import { useState } from 'react';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
