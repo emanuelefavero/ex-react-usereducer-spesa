@@ -1,4 +1,3 @@
-import { Badge } from './ui/Badge';
 import './Cart.css';
 import { Trash } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
