@@ -17,12 +17,10 @@ export const cartReducer = (state, action) => {
     case CART_ACTIONS.UPDATE_QUANTITY:
       const { id, quantity } = action.payload;
 
-      if (!Number.isFinite(quantity)) return state;
-
-      const validQuantity = Math.max(1, Math.trunc(quantity));
+      if (isNaN(quantity) || quantity < 1) return state;
 
       return state.map(item =>
-        item.id === id ? { ...item, quantity: validQuantity } : item,
+        item.id === id ? { ...item, quantity: Math.floor(quantity) } : item,
       );
 
     default:
