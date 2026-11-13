@@ -1,10 +1,17 @@
 import { Badge } from './ui/Badge';
 import './Cart.css';
 import { Trash } from 'lucide-react';
+import { useState } from 'react';
 import { formatCurrency } from '@/lib/utils';
 import { Button } from './ui/Button';
+import { Input } from './ui/Input';
 
-export const Cart = ({ products, total, onRemoveFromCart }) =>
+export const Cart = ({
+  products,
+  total,
+  onRemoveFromCart,
+  onUpdateProductQuantity,
+}) =>
   products.length > 0 && (
     <table className='cart'>
       <thead>
@@ -21,7 +28,22 @@ export const Cart = ({ products, total, onRemoveFromCart }) =>
           <tr key={p.id}>
             <td>{p.name}</td>
             <td>{p.price}€</td>
-            <td>{p.quantity}</td>
+
+            {/* Quantity */}
+            <td>
+              <Input
+                type='number'
+                min={1}
+                step={1}
+                value={p.quantity}
+                onChange={e =>
+                  onUpdateProductQuantity(p.id, Number(e.target.valueAsNumber))
+                }
+                aria-label={`Quantità di ${p.name}`}
+              />
+            </td>
+
+            {/* Remove button */}
             <td>
               <Button
                 onClick={() => onRemoveFromCart(p.id)}

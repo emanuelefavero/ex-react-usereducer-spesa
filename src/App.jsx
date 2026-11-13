@@ -18,10 +18,15 @@ export const App = () => {
       },
     ]);
 
-  const updateProductQuantity = (id, quantity) =>
+  const updateProductQuantity = (id, quantity) => {
+    if (!Number.isFinite(quantity)) return;
+
+    const validQuantity = Math.max(1, Math.trunc(quantity));
+
     setAddedProducts(prev =>
-      prev.map(p => (p.id === id ? { ...p, quantity } : p)),
+      prev.map(p => (p.id === id ? { ...p, quantity: validQuantity } : p)),
     );
+  };
 
   const removeFromCart = id =>
     setAddedProducts(prev => prev.filter(p => p.id !== id));
@@ -53,6 +58,7 @@ export const App = () => {
             products={addedProducts}
             total={total}
             onRemoveFromCart={removeFromCart}
+            onUpdateProductQuantity={updateProductQuantity}
           />
         </>
       )}
