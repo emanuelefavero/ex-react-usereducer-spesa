@@ -8,11 +8,20 @@ export const CART_ACTIONS = {
 
 export const cartReducer = (state, action) => {
   switch (action.type) {
-    case CART_ACTIONS.ADD_ITEM:
-      return [...state, { ...action.payload, quantity: 1 }];
+    case CART_ACTIONS.ADD_ITEM: {
+      const product = action.payload;
+      const productInCart = state.find(p => p.id === product.id);
 
-    case CART_ACTIONS.REMOVE_ITEM:
-      return state.filter(item => item.id !== action.payload.id);
+      if (productInCart) {
+        return state.map(item =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        );
+      }
+
+      return [...state, { ...product, quantity: 1 }];
+    }
 
     case CART_ACTIONS.UPDATE_QUANTITY:
       const { id, quantity } = action.payload;
@@ -22,6 +31,9 @@ export const cartReducer = (state, action) => {
       return state.map(item =>
         item.id === id ? { ...item, quantity: Math.floor(quantity) } : item,
       );
+
+    case CART_ACTIONS.REMOVE_ITEM:
+      return state.filter(item => item.id !== action.payload.id);
 
     default:
       return state;

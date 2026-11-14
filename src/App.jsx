@@ -14,18 +14,6 @@ export const App = () => {
   const hasCartItems = cart.length > 0;
   const total = cart.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
 
-  const handleAddToCart = product => {
-    const productInCart = cart.find(p => p.id === product.id);
-
-    if (productInCart) {
-      const { id, quantity } = productInCart;
-      cartDispatch({
-        type: CART_ACTIONS.UPDATE_QUANTITY,
-        payload: { id, quantity: quantity + 1 },
-      });
-    } else cartDispatch({ type: CART_ACTIONS.ADD_ITEM, payload: product });
-  };
-
   return (
     <main className='container'>
       <h1>Carrello della spesa</h1>
@@ -34,7 +22,9 @@ export const App = () => {
       <ProductList
         products={products}
         cart={cart}
-        onAddToCart={handleAddToCart}
+        onAddToCart={product =>
+          cartDispatch({ type: CART_ACTIONS.ADD_ITEM, payload: product })
+        }
       />
 
       {hasCartItems && (
